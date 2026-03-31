@@ -1,3 +1,10 @@
+name: Run API Tests
+
+on:
+  push:
+    branches:
+      - main
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -6,20 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # Step 2: Setup Node.js 24
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '24'
 
+      # Step 3: Install Newman globally
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
 
-      - name: List repo files for debugging
+      # Step 4: List repo files for debugging
+      - name: List repo files
         run: ls -la
 
+      # Step 5: Run Newman tests if files exist
       - name: Run Newman tests
         run: |
           if [[ -f collection.json && -f qa-env.json ]]; then
@@ -30,7 +42,8 @@ jobs:
             exit 1
           fi
 
-      - name: Upload report
+      # Step 6: Upload HTML report
+      - name: Upload API Test Report
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
