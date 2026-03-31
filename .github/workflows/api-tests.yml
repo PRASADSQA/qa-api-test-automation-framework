@@ -45,14 +45,39 @@ jobs:
           node-version: '24'
 
       - name: Install Newman
+       name: Run API Tests
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  run-api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24'
+
+      - name: Install Newman
         run: npm install -g newman newman-reporter-html
 
-      - name: List repo files
+      - name: List repo files for debugging
         run: ls -la
 
       - name: Run Newman tests
         run: |
           if [[ -f collection.json && -f qa-env.json ]]; then
+            echo "Running Newman tests..."
             newman run collection.json -e qa-env.json -r cli,html --reporter-html-export report.html
           else
             echo "Error: collection.json or qa-env.json not found!"
