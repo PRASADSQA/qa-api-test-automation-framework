@@ -16,14 +16,14 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '24'
 
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
 
       - name: Run API tests with environment
         run: |
-          newman run collection.json -e qa-env.json -r html --reporter-html-export report.html
+          newman run path/to/collection.json -e path/to/qa-env.json -r html --reporter-html-export report.html
 
       - name: Upload report
         uses: actions/upload-artifact@v4
